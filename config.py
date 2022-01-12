@@ -16,7 +16,7 @@ admin_default_language = {
 
 DEVS_IDs = [730111088,603739648]
 MAIN_ADMINS_ID = [730111088,603739648]
-LOAD_LANGUAGE_FROM_FILE = os.environ.get('LOAD_LANGUAGE_FROM_FILE',False)
+LOAD_LANGUAGE_FROM_FILE = os.environ.get('LOAD_LANGUAGE_FROM_FILE',True)
 
 
 class BaseConfig:
