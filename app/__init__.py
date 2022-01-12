@@ -10,6 +10,9 @@ import os
 import config
 import logging
 
+
+
+
 # Создаем экземпляр приложения
 app = Flask(__name__)
 app.logger.setLevel(logging.ERROR)

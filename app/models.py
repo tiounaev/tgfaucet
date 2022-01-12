@@ -24,6 +24,7 @@ class BotUser(UserMixin,db.Model):
     username = db.Column(db.String(50))
     language = db.Column(db.String(50),default="ru")
     balanse = db.Column(db.Float(),default=0.0)
+    adb_balanse = db.Column(db.Float(),default=0.0)
 
     def get_id(self):
         return self.user_id

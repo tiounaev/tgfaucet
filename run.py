@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from flask_script import Manager, Shell
 from app import app, db,models
+from flask_migrate import Migrate, MigrateCommand
 from bot.bot_views import bot
 import os
 import config
@@ -15,8 +16,9 @@ def make_shell_context():
 
 # Инициализируем приложение в flask_script
 manager = Manager(app)
+migrate = Migrate(app, db)
 manager.add_command('shell', Shell(make_context=make_shell_context))
-
+manager.add_command('db', MigrateCommand)
 
 @manager.command
 def polling_mode():
