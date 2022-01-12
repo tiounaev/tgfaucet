@@ -1,0 +1,29 @@
+{% extends 'admin/master.html' %}
+
+
+
+{% block tail_js %}
+  {{ super() }}
+  {% if admin_view.extra_js %}
+    {% for js in admin_view.extra_js %}
+      <script src="{{js}}"></script>
+    {% endfor %}
+  {% endif %}
+
+
+{% endblock %}
+
+
+{% block head_css %}
+  {{ super() }}
+{% endblock %}
+
+
+{% block body %}
+
+  <h1>Добро пожаловать!</h1>
+
+
+
+
+{% endblock %}

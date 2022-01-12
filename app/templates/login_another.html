@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<div id="tcontent"></div>
+
+<script>
+		function show()
+		{
+			$.ajax({
+	      type: 'POST',
+	            url:"{{url_for('another_login_status')}}" ,
+							data:{user_id:"{{user_id}}"},
+	            success: function(response_data){
+								if (response_data.broke_status){
+									window.location.replace("{{url_for('index')}}");
+								}
+
+								if (response_data.status){
+									console.log("ok_status");
+									window.location.replace("{{url_for('admin_redirect')}}");
+								} else {
+									console.log("False")
+								}
+	            }
+	    });
+
+		}
+
+		$(document).ready(function(){
+				show();
+				setInterval('show()',1000);
+		});
+</script>
+
+
+<div id="login">
+		<h3 class="text-center text-white pt-5">Admin Login</h3>
+		<div class="container">
+				<div id="login-row" class="row justify-content-center align-items-center">
+						<div id="login-column" class="col-md-6">
+								<div id="login-box" class="col-md-12">
+									<div class="card" style="width: 18rem;">
+									 	 <div class="spinner-border" role="status">
+											 60
+										  <span class="sr-only">Loading...</span>
+										</div>
+									  <div class="card-body">
+									    <p class="card-text">На ваш Telegram аккаунт бот отправил заявку, ожидание подтверждения:</p>
+									  </div>
+									</div>
+								</div>
+						</div>
+				</div>
+		</div>
+</div>
+
+
+
+{% endblock %}
