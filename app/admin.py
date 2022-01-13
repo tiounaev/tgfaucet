@@ -22,5 +22,15 @@ class UsersPage(ModelView):
         return current_user.is_authenticated
 
 
+class AdminPage(ModelView):
+    column_list = ('user_id',)
+    column_descriptions = dict(user_id="ID пользователя в телеграмм")
+    form_columns = ('user_id',)
+
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
 # INIT ADMIN PANEL
 admin.add_view(UsersPage(models.BotUser, db.session,"Все пользователи",category="Пользователи"))
+admin.add_view(AdminPage(models.BotAdmin, db.session,'Админы',category="Общие"))
