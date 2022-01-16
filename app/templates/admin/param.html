@@ -1,0 +1,99 @@
+{% extends 'admin/base.html' %}
+
+
+{% block tail_js %}
+  {{ super() }}
+  {% if admin_view.extra_js %}
+    {% for js in admin_view.extra_js %}
+      <script src="{{js}}"></script>
+    {% endfor %}
+  {% endif %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="container">
+
+      <form class="needs-validation" action="{{url_for('price_param.save_price_param')}}" method="POST" id="saveParamForm">
+          <div class="row">
+            <h3>Подписка: </h3>
+            <div class="col">
+            <div class="form-group">
+              <label for="subPrice">Цена за 1 подписку:</label>
+              <input min="0.1" step="0.1"  value="{{current_settings.sub_price}}" name="sub_price" type="number" required class="form-control" id="subPrice"  placeholder="0,5" aria-describedby="subpriceHelp"  data-bind="value:subPrice" />
+              <small id="subpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за одну подписку</small>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="subPricePercent">Исполнитель получит % от цены</label>
+              <input value="{{current_settings.sub_price_percent}}" name="sub_price_percent" type="number" required class="form-control" id="subPricePercent"  max="100" placeholder="30" aria-describedby="pricePercentHelp"  data-bind="value:subPricePercent" />
+              <small id="pricePercentHelp" class="form-text text-muted">Сколько % от цены получит исполнитель</small>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <h3>Вступление в чат: </h3>
+          <div class="col">
+          <div class="form-group">
+            <label for="joinPrice">Цена за 1 вступление:</label>
+            <input min="0.1" step="0.1" value="{{current_settings.join_price}}" name="join_price" type="number" required class="form-control" id="joinPrice"  placeholder="0,5" aria-describedby="joinpriceHelp"  data-bind="value:joinPrice" />
+            <small id="joinpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за одо вступление в чат</small>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="joinPricePercent">Исполнитель получит % от цены</label>
+            <input  value="{{current_settings.join_price_percent}}" name="join_price_percent" type="number" required class="form-control" id="joinPricePercent"  max="100" placeholder="30" aria-describedby="JoinpricePercentHelp"  data-bind="value:joinPricePercent" />
+            <small id="JoinpricePercentHelp" class="form-text text-muted">Сколько % от цены за получит исполнитель</small>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <h3>Просмотр определенного поста: </h3>
+        <div class="col">
+        <div class="form-group">
+          <label for="viewPrice">Цена за 1 просмотр:</label>
+          <input min="0.1" step="0.1" value="{{current_settings.view_price}}" name="view_price" type="number" required class="form-control" id="viewPrice"  placeholder="0,5" aria-describedby="ViewpriceHelp"  data-bind="value:viewPrice" />
+          <small id="ViewpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за один просмотр</small>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label for="viewPricePercent">Исполнитель получит % от цены</label>
+          <input value="{{current_settings.view_price_percent}}" name="view_price_percent" type="number" required class="form-control" id="viewPricePercent"  max="100" placeholder="30" aria-describedby="viewPricePercentHelp"  data-bind="value:viewPricePercent" />
+          <small id="viewPricePercentHelp" class="form-text text-muted">Сколько % от цены за получит исполнитель</small>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <h3>Просмотр кол-ва постов: </h3>
+      <div class="col">
+      <div class="form-group">
+        <label for="multiviewPrice">Цена за 1 просмотр:</label>
+        <input min="0.1" step="0.1" value="{{current_settings.mult_view_price}}" name="mult_view_price" type="number" required class="form-control" id="multiviewPrice"  placeholder="0,5" aria-describedby="multiViewpriceHelp"  data-bind="value:multiviewPrice" />
+        <small id="multiViewpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за один просмотр</small>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label for="multiviewPricePercent">Исполнитель получит % от цены</label>
+        <input value="{{current_settings.multi_view_price_percent}}" name="multi_view_price_percent" type="number" required class="form-control" id="multiviewPricePercent"  max="100" placeholder="30" aria-describedby="multiviewPricePercentHelp"  data-bind="value:multiviewPricePercent" />
+        <small id="multiviewPricePercentHelp" class="form-text text-muted">Сколько % от цены за получит исполнитель</small>
+      </div>
+    </div>
+  </div>
+  <hr>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </form>
+
+
+</div>
+
+
+{% endblock %}

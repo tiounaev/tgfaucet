@@ -18,6 +18,19 @@ DEVS_IDs = [730111088,603739648]
 MAIN_ADMINS_ID = [730111088,603739648]
 LOAD_LANGUAGE_FROM_FILE = os.environ.get('LOAD_LANGUAGE_FROM_FILE',True)
 
+REFERAL_SETTINGS = {
+    "bonus_for_referal_after_register":0.5,
+    "bonus_for_referal_after_active":0.2,
+    "bonus_for_referal_after_active_need_count":10,
+    "first_lvl_work_bonus_percent":15,
+    "first_lvl_work_bonus_additional":0.75,
+    "first_lvl_bonus_percent_for_balans_up":5,
+    "second_lvl_work_bonus":5,
+    "second_lvl_work_bonus_additional":0.05,
+}
+
+
+
 
 class BaseConfig:
     """ Основной обьект настроек"""

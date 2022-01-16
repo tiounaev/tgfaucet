@@ -38,7 +38,6 @@ class Language:
         keyname = "{}:{}".format(self.prefix,code)
         if config.LOAD_LANGUAGE_FROM_FILE:
             data = get_language_with_code_from_file(code)
-            print(data)
         else:
             data = self.redis_client.get(keyname)
         if not data:

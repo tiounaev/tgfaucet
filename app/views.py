@@ -48,6 +48,17 @@ def index():
 def admin_redirect():
 	return redirect("/admin")
 
+@app.route('/admin/init_app')
+@login_required
+def admin_init_app():
+	flash("Ok")
+	if models.BotPriceParam.query.count() == 0:
+		new_set = models.BotPriceParam(sub_price=2.0,sub_price_percent=30,join_price=2.0,join_price_percent=30,view_price=0.5,view_price_percent=30,mult_view_price=0.2,multi_view_price_percent=30)
+		db.session.add(new_set)
+		db.session.commit()
+		flash("init set")
+	return redirect("/admin")
+
 
 
 

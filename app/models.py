@@ -39,8 +39,58 @@ class BotAdmin(db.Model):
     - admin - администратор
     """
     __tablename__ = 'bot_admins'
-    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id"),primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'),primary_key=True)
     role = db.Column(db.String(50),default="admin")
 
     def __repr__(self):
         return auto_repr(self)
+
+
+
+class BotPriceParam(db.Model):
+    """ Админ в боте """
+    __tablename__ = 'bot_price_param'
+    id = db.Column(db.Integer(), primary_key=True)
+    sub_price = db.Column(db.Float())
+    sub_price_percent = db.Column(db.Float())
+    join_price = db.Column(db.Float())
+    join_price_percent = db.Column(db.Float())
+    view_price = db.Column(db.Float())
+    view_price_percent = db.Column(db.Float())
+    mult_view_price = db.Column(db.Float())
+    multi_view_price_percent = db.Column(db.Float())
+
+
+    def __repr__(self):
+        return auto_repr(self)
+
+
+
+class UserReferal(db.Model):
+    """ Реферальная связь """
+    __tablename__ = 'bot_referals'
+    id = db.Column(db.Integer(), primary_key=True)
+    referal_user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    referal_for_user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    second = db.Column(db.Boolean(),default=False)
+
+
+
+class UserBalanseChange(db.Model):
+    """ История изменения баланса
+
+        Main tag:
+    > first_lvl_referal - начисления от реферальной системы первого уровня
+    > second_lvl_referal - начисления от реферальной системы второго уровня
+
+        Additional tag
+    > register_bonus - бонус после регистрации
+
+    """
+    __tablename__ = 'user_balanse_change_hystory'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    tag = db.Column(db.String(50))
+    second_tag = db.Column(db.String(50))
+    plus = db.Column(db.Boolean(),default=True)
+    count = db.Column(db.Float())
