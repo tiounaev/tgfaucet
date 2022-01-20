@@ -1,7 +1,7 @@
 import config
 import telebot
 import time
-from .app import bot,fsm,tbf
+from .app import bot,fsm,tbf,ymoney_client
 from .app import language_sdk
 from tb_forms import validators as tbf_validators
 from . import keyboards as menu
@@ -129,6 +129,15 @@ def main_menu_info_update(message):
 
 
 #####################--Технические--################################################
+
+
+
+# ----TEST PAYMENTS----
+@bot.message_handler(commands=['test'])
+def test_update(message):
+    data = ymoney_client.account_info()
+    print(data)
+
 
 # ---- Разрешить вход в веб-панель ----
 @bot.callback_query_handler(func=lambda call: True and call.data == config.admin_another_login_accept_callback)

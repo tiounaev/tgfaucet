@@ -20,3 +20,4 @@ psycopg2
 validators
 TBForms==0.9.7
 pydantic
+yoomoney
