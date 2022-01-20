@@ -1,6 +1,7 @@
 import config
 import telebot
 import time
+import traceback
 from .app import bot,fsm,tbf,ymoney_client
 from .app import language_sdk
 from tb_forms import validators as tbf_validators
@@ -75,7 +76,8 @@ def main_menu_for_user_update(message):
 @bot.message_handler(func=lambda message: message.text and  message.text == language_check(message.from_user.id)['register']["main_menu_keyboard"][1])
 def main_menu_for_orderer_update(message):
     language = language_check(message.chat.id)
-    bot.send_message(message.chat.id,"Ошибка... Функция отключена администратором (SKIP_NOT_DEV_USER_ID=True)")
+    bot.send_message(message.chat.id,language["adv_menu"]["text"],reply_markup=menu.get_adv_menu_markup(language,message.chat.id))
+
 
 # ----Личный кабинет----
 @bot.message_handler(func=lambda message: message.text and  message.text == language_check(message.from_user.id)['register']["main_menu_keyboard"][3])
@@ -128,6 +130,97 @@ def main_menu_info_update(message):
 
 
 
+#####################--Создание заказа--################################################
+
+# ----Создать новый заказ----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call,"adv_menu_new_order"))
+def create_new_order_update(call):
+    language = language_check(call.message.chat.id)
+    bot.delete_message(call.message.chat.id,call.message.message_id)
+    form = forms.CreateNewORderForm(language)
+    tbf.send_form(call.message.chat.id,form)
+
+
+# ----Перейти к созданию нового заказа ----
+@tbf.form_event("create_new_order",action=["submit"])
+def submit_create_order_form_update(call,form_data):
+    language = language_check(call.message.chat.id)
+    asnwer_map = {
+        language["adv_menu"]["create_new_order_form_select_type_vars"][0]:"subscribe",
+        language["adv_menu"]["create_new_order_form_select_type_vars"][1]:"subscribe",
+        language["adv_menu"]["create_new_order_form_select_type_vars"][2]:"view_post",
+        language["adv_menu"]["create_new_order_form_select_type_vars"][3]:"view_multi_post"
+    }
+    new_order_type = asnwer_map[form_data.order_type]
+
+    if new_order_type == "subscribe":
+        sent_msg = bot.send_message(call.message.chat.id,language["create_order"]["create_subscribe_order"]["get_sub_chat_id_text"])
+        bot.reply_to(sent_msg,"new_subscribe_order {}".format(call.message.chat.id))
+
+
+
+# ----Кол-во подписок для заказа---
+@bot.message_handler(content_types=['text'],func=lambda message: True and fsm.get_state(message.chat.id).state == "new_subscribe_order_get_count")
+def new_subscribe_order_get_count(message):
+    language = language_check(message.chat.id)
+    state_args = fsm.get_state(message.chat.id).args
+    try:
+        count = int(message.text)
+    except:
+        markup = {language["cancel_button"]:"cancel_hundler"}
+        fsm.set_state(message.chat.id,"new_subscribe_order_get_count",channel_id=state_args.channel_id)
+        bot.send_message(message.chat.id,language["create_order"]["create_subscribe_order"]["get_sub_count_text"],reply_markup=menu.create_inline_markup(markup))
+        return
+    fsm.reset_state(message.chat.id)
+    markup = {
+        language["create_order"]["pay_button"]:"pay_subscribe_order {} {}".format(state_args.channel_id,count)
+    }
+    current_settings = models.BotPriceParam.query.first()
+    price = (current_settings.sub_price * count)
+    if (price / int(price)) != 0:
+        price = str(int(price)) + "." + str( (price - int(price) ) )[2:4]
+    bot.send_message(message.chat.id,language["create_order"]["pay_text"].format(price),reply_markup=menu.create_inline_markup(markup))
+
+
+# ---- Получаем ид чата для прокачки ----
+@bot.message_handler(func=lambda message: str(str(message.text).split(" ")[0]) == "new_subscribe_order" and str(message.chat.type) != "private")
+def get_subscribe_chat_id(message):
+    user_chat_id = int(str(message.text).split(" ")[1])
+    language = language_check(user_chat_id)
+    bot.delete_message(message.chat.id,message.message_id)
+    markup = {language["cancel_button"]:"cancel_hundler"}
+    fsm.set_state(user_chat_id,"new_subscribe_order_get_count",channel_id=message.chat.id)
+    bot.send_message(user_chat_id,language["create_order"]["create_subscribe_order"]["get_sub_count_text"],reply_markup=menu.create_inline_markup(markup))
+
+
+# ----Оплатить заказ на подписки----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call,"pay_subscribe_order"))
+def pay_subscribe_order_update(call):
+    language = language_check(call.message.chat.id)
+    user = models.BotUser.query.filter_by(user_id=call.from_user.id).first()
+    current_settings = models.BotPriceParam.query.first()
+    count = int(call.data.split(" ")[2])
+    c_id = int(call.data.split(" ")[1])
+    price = (current_settings.sub_price * count)
+    if (user.adb_balanse - price) < 0:
+        bot.answer_callback_query(call.id,show_alert=True,text=language["create_order"]["no_money_error"])
+        return
+    bot.delete_message(call.message.chat.id,call.message.message_id)
+    user.adb_balanse = (user.adb_balanse - price)
+    new_order = models.SubscribeOrderType(user_id=call.from_user.id,count=count,chat_id=c_id)
+    db.session.add(new_order)
+    db.session.commit()
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=language["create_order"]["created"])
+
+
+
+# ---- Получаем ид канала для прокачки ----
+@bot.channel_post_handler(content_types=['text'])
+def channel_post_updater(message):
+    if str(str(message.text).split(" ")[0]) == "new_subscribe_order":
+        get_subscribe_chat_id(message)
+
+
 #####################--Технические--################################################
 
 
@@ -135,9 +228,11 @@ def main_menu_info_update(message):
 # ----TEST PAYMENTS----
 @bot.message_handler(commands=['test'])
 def test_update(message):
-    data = ymoney_client.account_info()
-    print(data)
-
+    try:
+        data = ymoney_client.account_info()
+        print(data)
+    except:
+        print(traceback.format_exc())
 
 # ---- Разрешить вход в веб-панель ----
 @bot.callback_query_handler(func=lambda call: True and call.data == config.admin_another_login_accept_callback)

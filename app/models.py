@@ -66,6 +66,74 @@ class BotPriceParam(db.Model):
 
 
 
+class SubscribeOrderType(db.Model):
+    """ Заказ на подписку\вступление """
+    __tablename__ = 'bot_subscribe_order_types'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    count = db.Column(db.Integer())
+    one_sub_price = db.Column(db.Float())
+    chat_id = db.Column(db.BigInteger())
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    active = db.Column(db.Boolean(),default=True)
+
+
+class SubscribeOrderWorker(db.Model):
+    """ Исполнение заказа на подписку\вступление """
+    __tablename__ = 'bot_subscribe_order_worker'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    order_id = db.Column(db.Integer(), db.ForeignKey(f"{SubscribeOrderType.__tablename__}.id",ondelete='CASCADE'))
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+
+
+class ViewOnePostOrderType(db.Model):
+    """ Заказ на просмотр одного поста """
+    __tablename__ = "bot_view_one_post_order_types"
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    count = db.Column(db.Integer())
+    one_view_price = db.Column(db.Float())
+    chat_id = db.Column(db.BigInteger())
+    msg_id = db.Column(db.Integer())
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    active = db.Column(db.Boolean(),default=True)
+
+
+class ViewOnePostOrderWorker(db.Model):
+    """ Исполнение заказа на просмотр одного поста """
+    __tablename__ = 'bot_view_one_post_order_worker'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    order_id = db.Column(db.Integer(), db.ForeignKey(f"{ViewOnePostOrderType.__tablename__}.id",ondelete='CASCADE'))
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+
+
+class ViewMultiPostOrderType(db.Model):
+    """ Заказ на просмотр кол-ва постов """
+    __tablename__ = "bot_view_multi_post_order_types"
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    count = db.Column(db.Integer())
+    one_view_price = db.Column(db.Float())
+    chat_id = db.Column(db.BigInteger())
+    last_msg_id = db.Column(db.Integer())
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    active = db.Column(db.Boolean(),default=True)
+
+class ViewMultiPostOrderWorker(db.Model):
+    """ Исполнение заказа на просмотр кол-ва постов """
+    __tablename__ = 'bot_view_multi_post_order_worker'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    order_id = db.Column(db.Integer(), db.ForeignKey(f"{ViewMultiPostOrderType.__tablename__}.id",ondelete='CASCADE'))
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
+
+
+
+
+
+
 class UserReferal(db.Model):
     """ Реферальная связь """
     __tablename__ = 'bot_referals'
@@ -88,6 +156,26 @@ class UserBalanseChange(db.Model):
 
     """
     __tablename__ = 'user_balanse_change_hystory'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
+    tag = db.Column(db.String(50))
+    second_tag = db.Column(db.String(50))
+    plus = db.Column(db.Boolean(),default=True)
+    count = db.Column(db.Float())
+
+
+
+class AdvBalanseChange(db.Model):
+    """ История изменения рекламного баланса
+
+        Main tag:
+    > create_order
+
+        Additional tag:
+    > order_type:{type_name}
+
+    """
+    __tablename__ = 'adv_balanse_change_hystory'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
     tag = db.Column(db.String(50))
