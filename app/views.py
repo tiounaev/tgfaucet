@@ -61,6 +61,10 @@ def admin_init_app():
 
 
 
+@app.route('/payments_redirect')
+def payments_redirect():
+	return redirect("https://t.me/tgfzarobotok")
+
 
 @app.route("/another_login_status", methods=['POST'])
 def another_login_status():
