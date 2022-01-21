@@ -11,10 +11,10 @@ import json
 
 
 class UsersPage(ModelView):
-    column_list = ('user_id','name','username','balanse',"adb_balanse")
-    column_labels = dict(name="Имя",balanse="Баланс",adb_balanse="Рекламный баланс")
+    column_list = ('user_id','name','username','balanse')
+    column_labels = dict(name="Имя",balanse="Баланс")
     column_descriptions = dict(user_id="ID пользователя в телеграмм",name="Имя пользователя в Telegram")
-    form_columns = ('name', 'balanse','adb_balanse')
+    form_columns = ('name', 'balanse')
     column_searchable_list = ('user_id','name', 'username')
     can_create = False
     can_delete = False
@@ -36,7 +36,7 @@ class ParamPage(BaseView):
     @expose("/")
     def index(self):
         if models.BotPriceParam.query.count() == 0:
-            new_set = models.BotPriceParam(sub_price=2.0,sub_price_percent=30,join_price=2.0,join_price_percent=30,view_price=0.5,view_price_percent=30,mult_view_price=0.2,multi_view_price_percent=30)
+            new_set = models.BotPriceParam(sub_price=2.0,sub_price_percent=30,join_price=2.0,join_price_percent=30,view_price=0.5,view_price_percent=30,mult_view_price=0.2,multi_view_price_percent=30,first_lvl_referal_balanse_percent=5,first_lvl_referal_work_percent=5,second_lvl_referal_balanse_percent=2,second_lvl_referal_work_percent=2)
             db.session.add(new_set)
             db.session.commit()
         current_settings = models.BotPriceParam.query.first()

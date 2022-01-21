@@ -24,7 +24,7 @@ class BotUser(UserMixin,db.Model):
     username = db.Column(db.String(50))
     language = db.Column(db.String(50),default="ru")
     balanse = db.Column(db.Float(),default=0.0)
-    adb_balanse = db.Column(db.Float(),default=0.0)
+    create_date = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def get_id(self):
         return self.user_id
@@ -59,6 +59,10 @@ class BotPriceParam(db.Model):
     view_price_percent = db.Column(db.Float())
     mult_view_price = db.Column(db.Float())
     multi_view_price_percent = db.Column(db.Float())
+    first_lvl_referal_balanse_percent = db.Column(db.Float())
+    first_lvl_referal_work_percent = db.Column(db.Float())
+    second_lvl_referal_balanse_percent = db.Column(db.Float())
+    second_lvl_referal_work_percent = db.Column(db.Float())
 
 
     def __repr__(self):

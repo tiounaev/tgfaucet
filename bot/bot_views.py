@@ -84,7 +84,7 @@ def main_menu_for_orderer_update(message):
 def main_menu_cab_update(message):
     language = language_check(message.chat.id)
     my_user = models.BotUser.query.filter_by(user_id=message.chat.id).first()
-    bot.send_message(message.chat.id,language["main_menu"]["cab"]["text"].format(my_user.balanse,my_user.adb_balanse),reply_markup=menu.get_cab_markup(language))
+    bot.send_message(message.chat.id,language["main_menu"]["cab"]["text"].format(my_user.balanse),reply_markup=menu.get_cab_markup(language))
 
 
 # ----Реферальная система----
@@ -202,11 +202,11 @@ def pay_subscribe_order_update(call):
     count = int(call.data.split(" ")[2])
     c_id = int(call.data.split(" ")[1])
     price = (current_settings.sub_price * count)
-    if (user.adb_balanse - price) < 0:
+    if (user.balanse - price) < 0:
         bot.answer_callback_query(call.id,show_alert=True,text=language["create_order"]["no_money_error"])
         return
     bot.delete_message(call.message.chat.id,call.message.message_id)
-    user.adb_balanse = (user.adb_balanse - price)
+    user.balanse = (user.balanse - price)
     new_order = models.SubscribeOrderType(user_id=call.from_user.id,count=count,chat_id=c_id)
     db.session.add(new_order)
     db.session.commit()
