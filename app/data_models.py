@@ -11,3 +11,7 @@ class ParamSettings(BaseModel):
     view_price_percent: float
     mult_view_price: float
     multi_view_price_percent: float
+    first_lvl_referal_balanse_up_bonus: float
+    first_lvl_referal_work_bonus: float
+    second_lvl_referal_balanse_up_bonus: float
+    second_lvl_referal_work_bonus: float

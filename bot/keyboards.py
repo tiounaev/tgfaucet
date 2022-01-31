@@ -9,8 +9,6 @@ def get_cab_markup(language):
     """ Личный кабинет """
     markup = {
         language["main_menu"]["cab"]["balanse_up_but"]:"my_cab_up_balanse",
-        language["main_menu"]["cab"]["adv_balanse_up_but"]:"my_cab_up_adv_balanse",
-        language["main_menu"]["cab"]["convert_balanse_up_but"]:"my_cab_convert_balanse"
 
     }
     return create_inline_markup(markup,row=2)

@@ -166,23 +166,3 @@ class UserBalanseChange(db.Model):
     second_tag = db.Column(db.String(50))
     plus = db.Column(db.Boolean(),default=True)
     count = db.Column(db.Float())
-
-
-
-class AdvBalanseChange(db.Model):
-    """ История изменения рекламного баланса
-
-        Main tag:
-    > create_order
-
-        Additional tag:
-    > order_type:{type_name}
-
-    """
-    __tablename__ = 'adv_balanse_change_hystory'
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
-    tag = db.Column(db.String(50))
-    second_tag = db.Column(db.String(50))
-    plus = db.Column(db.Boolean(),default=True)
-    count = db.Column(db.Float())

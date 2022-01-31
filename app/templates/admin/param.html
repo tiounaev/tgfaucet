@@ -22,7 +22,7 @@
             <div class="col">
             <div class="form-group">
               <label for="subPrice">Цена за 1 подписку:</label>
-              <input min="0.1" step="0.1"  value="{{current_settings.sub_price}}" name="sub_price" type="number" required class="form-control" id="subPrice"  placeholder="0,5" aria-describedby="subpriceHelp"  data-bind="value:subPrice" />
+              <input min="0.001" step="0.001"  value="{{current_settings.sub_price}}" name="sub_price" type="number" required class="form-control" id="subPrice"  placeholder="0,5" aria-describedby="subpriceHelp"  data-bind="value:subPrice" />
               <small id="subpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за одну подписку</small>
             </div>
           </div>
@@ -40,7 +40,7 @@
           <div class="col">
           <div class="form-group">
             <label for="joinPrice">Цена за 1 вступление:</label>
-            <input min="0.1" step="0.1" value="{{current_settings.join_price}}" name="join_price" type="number" required class="form-control" id="joinPrice"  placeholder="0,5" aria-describedby="joinpriceHelp"  data-bind="value:joinPrice" />
+            <input min="0.001" step="0.001" value="{{current_settings.join_price}}" name="join_price" type="number" required class="form-control" id="joinPrice"  placeholder="0,5" aria-describedby="joinpriceHelp"  data-bind="value:joinPrice" />
             <small id="joinpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за одо вступление в чат</small>
           </div>
         </div>
@@ -58,7 +58,7 @@
         <div class="col">
         <div class="form-group">
           <label for="viewPrice">Цена за 1 просмотр:</label>
-          <input min="0.1" step="0.1" value="{{current_settings.view_price}}" name="view_price" type="number" required class="form-control" id="viewPrice"  placeholder="0,5" aria-describedby="ViewpriceHelp"  data-bind="value:viewPrice" />
+          <input min="0.001" step="0.001" value="{{current_settings.view_price}}" name="view_price" type="number" required class="form-control" id="viewPrice"  placeholder="0,5" aria-describedby="ViewpriceHelp"  data-bind="value:viewPrice" />
           <small id="ViewpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за один просмотр</small>
         </div>
       </div>
@@ -76,7 +76,7 @@
       <div class="col">
       <div class="form-group">
         <label for="multiviewPrice">Цена за 1 просмотр:</label>
-        <input min="0.1" step="0.1" value="{{current_settings.mult_view_price}}" name="mult_view_price" type="number" required class="form-control" id="multiviewPrice"  placeholder="0,5" aria-describedby="multiViewpriceHelp"  data-bind="value:multiviewPrice" />
+        <input min="0.001" step="0.001" value="{{current_settings.mult_view_price}}" name="mult_view_price" type="number" required class="form-control" id="multiviewPrice"  placeholder="0,5" aria-describedby="multiViewpriceHelp"  data-bind="value:multiviewPrice" />
         <small id="multiViewpriceHelp" class="form-text text-muted">Сколько заказчик заплатит за один просмотр</small>
       </div>
     </div>
@@ -89,6 +89,46 @@
     </div>
   </div>
   <hr>
+
+  <div class="row">
+    <h3>Реферальная система первого уровня: </h3>
+    <div class="col">
+    <div class="form-group">
+      <label for="FirstLvlUpBalanseBonus">% за пополнение:</label>
+      <input min="0.001" step="0.001" value="{{current_settings.first_lvl_referal_balanse_percent}}" name="first_lvl_referal_balanse_up_bonus" type="number" required class="form-control" id="FirstLvlUpBalanseBonus"  placeholder="0,5" aria-describedby="FirstLvlUpBalanseBonusHelp"  data-bind="value:FirstLvlUpBalanseBonus" />
+      <small id="FirstLvlUpBalanseBonusHelp" class="form-text text-muted">Сколько % от пополнений реферала первого уровня будет получать пользователь</small>
+    </div>
+  </div>
+  <div class="col">
+    <div class="form-group">
+      <label for="FirstLvlWorkBonus">% за работу:</label>
+      <input value="{{current_settings.first_lvl_referal_work_percent}}" name="first_lvl_referal_work_bonus" type="number" required class="form-control" id="FirstLvlWorkBonus"  max="100" placeholder="30" aria-describedby="FirstLvlWorkBonusHelp"  data-bind="value:FirstLvlWorkBonus" />
+      <small id="FirstLvlWorkBonusHelp" class="form-text text-muted">Сколько % от выполненой работы реферала первого уровня будет получать пользователь</small>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<div class="row">
+  <h3>Реферальная система второго уровня: </h3>
+  <div class="col">
+  <div class="form-group">
+    <label for="SecondLvlUpBalanseBonus">% за пополнение:</label>
+    <input min="0.001" step="0.001" value="{{current_settings.second_lvl_referal_balanse_percent}}" name="second_lvl_referal_balanse_up_bonus" type="number" required class="form-control" id="SecondLvlUpBalanseBonus"  placeholder="0,5" aria-describedby="SecondLvlUpBalanseBonusHelp"  data-bind="value:SecondLvlUpBalanseBonus" />
+    <small id="SecondLvlUpBalanseBonusHelp" class="form-text text-muted">Сколько % от пополнений реферала второго уровня будет получать пользователь</small>
+  </div>
+</div>
+<div class="col">
+  <div class="form-group">
+    <label for="SecondLvlWorkBonus">% за работу:</label>
+    <input value="{{current_settings.second_lvl_referal_work_percent}}" name="second_lvl_referal_work_bonus" type="number" required class="form-control" id="SecondLvlWorkBonus"  max="100" placeholder="30" aria-describedby="SecondLvlWorkBonusHelp"  data-bind="value:SecondLvlWorkBonus" />
+    <small id="SecondLvlWorkBonusHelp" class="form-text text-muted">Сколько % от выполненой работы реферала второго уровня будет получать пользователь</small>
+  </div>
+</div>
+</div>
+<hr>
+
         <button type="submit" class="btn btn-primary">Сохранить</button>
       </form>
 

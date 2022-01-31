@@ -53,7 +53,12 @@ class ParamPage(BaseView):
         if valid:
             db.session.query(models.BotPriceParam).delete()
             db.session.commit()
-            new_set = models.BotPriceParam(sub_price=new_params.sub_price,sub_price_percent=new_params.sub_price_percent,join_price=new_params.join_price,join_price_percent=new_params.join_price_percent,view_price=new_params.view_price,view_price_percent=new_params.view_price_percent,mult_view_price=new_params.mult_view_price,multi_view_price_percent=new_params.multi_view_price_percent)
+            new_set = models.BotPriceParam(sub_price=new_params.sub_price,sub_price_percent=new_params.sub_price_percent,\
+                join_price=new_params.join_price,join_price_percent=new_params.join_price_percent,\
+                view_price=new_params.view_price,view_price_percent=new_params.view_price_percent,\
+                mult_view_price=new_params.mult_view_price,multi_view_price_percent=new_params.multi_view_price_percent,\
+                first_lvl_referal_balanse_percent=new_params.first_lvl_referal_balanse_up_bonus,first_lvl_referal_work_percent=new_params.first_lvl_referal_work_bonus,\
+                second_lvl_referal_balanse_percent=new_params.second_lvl_referal_balanse_up_bonus,second_lvl_referal_work_percent=new_params.second_lvl_referal_work_bonus)
             db.session.add(new_set)
             db.session.commit()
             flash("Успешно сохранено.")
@@ -82,18 +87,10 @@ class MoneyHystoryPage(ModelView):
     column_labels = dict(user_id="ID пользователя",tag="Тег",second_tag="Дополнительный тег",plus="Начисление:",count="Сумма")
 
 
-class AdvMoneyHystoryPage(ModelView):
-    can_create = False
-    can_delete = False
-    can_edit = False
-    column_list = ('user_id','tag','second_tag','plus','count',)
-    column_labels = dict(user_id="ID пользователя",tag="Тег",second_tag="Дополнительный тег",plus="Начисление:",count="Сумма")
-
 
 # INIT ADMIN PANEL
 admin.add_view(UsersPage(models.BotUser, db.session,"Все пользователи",category="Пользователи"))
 admin.add_view(AdminPage(models.BotAdmin, db.session,'Админы',category="Пользователи"))
 admin.add_view(ReferalsPage(models.UserReferal, db.session,'Реферальные связи',category="Пользователи"))
 admin.add_view(MoneyHystoryPage(models.UserBalanseChange, db.session,'Движения баланса',category="Финансы"))
-admin.add_view(AdvMoneyHystoryPage(models.AdvBalanseChange, db.session,'Движения рекламного баланса',category="Финансы"))
 admin.add_view(ParamPage("Параметры",endpoint="price_param"))

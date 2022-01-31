@@ -92,7 +92,6 @@ def main_menu_cab_update(message):
 def main_menu_referal_update(message):
     language = language_check(message.chat.id)
     my_link = "https://t.me/{}?start={}".format(bot.get_me().username,message.chat.id)
-    total_start_bonus = config.REFERAL_SETTINGS["bonus_for_referal_after_register"] + config.REFERAL_SETTINGS["bonus_for_referal_after_active"]
     my_ref_master_name = language["main_menu"]["referal_system"]["none_referal"]
     my_ref_master = models.UserReferal.query.filter_by(referal_user_id=message.chat.id,second=False).first()
     if my_ref_master:
@@ -111,15 +110,13 @@ def main_menu_referal_update(message):
     claim_for_second_lvl_ref = 0
     for ref_plus in  models.UserBalanseChange.query.filter_by(tag="second_lvl_referal",plus=True).all():
         claim_for_second_lvl_ref += ref_plus.count
+    current_settings = models.BotPriceParam.query.first()
     format_args = dict(
-            total_reg_bonus=total_start_bonus,after_reg_bonus=config.REFERAL_SETTINGS["bonus_for_referal_after_register"],\
-            bonus_after_active=config.REFERAL_SETTINGS["bonus_for_referal_after_active"],bonus_after_active_after_count=config.REFERAL_SETTINGS["bonus_for_referal_after_active_need_count"],my_ref=my_ref_master_name,\
+            my_ref=my_ref_master_name,\
             first_lvl_ref_count=first_lvl_ref_count,first_lvl_ref_claim=claim_for_first_lvl_ref,second_lvl_referal_count=second_lvl_ref_count,second_lvl_referal_claim=claim_for_second_lvl_ref,\
-            first_lvl_work_bonus=config.REFERAL_SETTINGS["first_lvl_work_bonus_percent"],first_lvl_work_bonus_additional=config.REFERAL_SETTINGS["first_lvl_work_bonus_additional"],\
-            first_lvl_balans_up_bonus=config.REFERAL_SETTINGS["first_lvl_bonus_percent_for_balans_up"],second_lvl_work_bonus=config.REFERAL_SETTINGS["second_lvl_work_bonus"],second_lvl_work_bonus_additional=config.REFERAL_SETTINGS["second_lvl_work_bonus_additional"],my_link=my_link)
+            first_lvl_work_bonus=current_settings.first_lvl_referal_work_percent,\
+            first_lvl_balans_up_bonus=current_settings.first_lvl_referal_balanse_percent,second_lvl_work_bonus=current_settings.second_lvl_referal_work_percent,my_link=my_link,second_lvl_balanse_up_bonus=current_settings.second_lvl_referal_balanse_percent)
     bot.send_message(message.chat.id,language["main_menu"]["referal_system"]["post"].format(**format_args) )
-
-
 
 
 # ----Инфо----
@@ -127,6 +124,15 @@ def main_menu_referal_update(message):
 def main_menu_info_update(message):
     language = language_check(message.chat.id)
     bot.send_message(message.chat.id,language["main_menu"]["info"])
+
+
+#####################--Пополнить баланс--################################################
+
+# ----Перейти к пополнению баланса----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call,"my_cab_up_balanse"))
+def to_balanse_up_update(call):
+    language = language_check(call.message.chat.id)
+    
 
 
 
