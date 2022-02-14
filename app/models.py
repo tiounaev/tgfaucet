@@ -119,6 +119,7 @@ class ViewMultiPostOrderType(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey(f"{BotUser.__tablename__}.user_id",ondelete='CASCADE'))
     count = db.Column(db.Integer())
+    post_count = db.Column(db.Integer())
     one_view_price = db.Column(db.Float())
     chat_id = db.Column(db.BigInteger())
     last_msg_id = db.Column(db.Integer())

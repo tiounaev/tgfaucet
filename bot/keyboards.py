@@ -26,3 +26,21 @@ def get_adv_menu_markup(language,user_id):
         language["adv_menu"]["create_new_order_but"]:"adv_menu_new_order"
     }
     return create_inline_markup(markup,row=1)
+
+
+def get_active_order_menu(language,all_orders):
+    """ Список активных заказов """
+    markup = {}
+    for order in all_orders:
+        if isinstance(order,models.SubscribeOrderType):
+            order_type = "subscribe"
+            order_name = language["active_order"]["subscribe_type"]
+        elif isinstance(order,models.ViewOnePostOrderType):
+            order_type = "view_one_post"
+            order_name = language["active_order"]["view_post_type"]
+        elif isinstance(order,models.ViewMultiPostOrderType):
+            order_type = "view_multi_post"
+            order_name = language["active_order"]["view_multi_post_type"]
+        markup[language["active_order"]["but_text_format"].format(order_name,order.id)] = "select_active_order {} {}".format(order_type,order.id)
+    markup[language["back"]] = "back_to_orders_menu"
+    return create_inline_markup(markup,row=1)

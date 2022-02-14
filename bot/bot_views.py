@@ -62,15 +62,13 @@ def start_update(message):
                 db.session.commit()
 
 
-#####################--Главное меню --################################################
-
-
+#  #################### --Главное меню -- ################################################
 
 # ----Заработать----
 @bot.message_handler(func=lambda message: message.text and  message.text == language_check(message.from_user.id)['register']["main_menu_keyboard"][0])
 def main_menu_for_user_update(message):
     language = language_check(message.chat.id)
-    bot.send_message(message.chat.id,"В данный момент для вас нет доступных заданий... Попробуйте позже")
+    bot.send_message(message.chat.id, "В данный момент для вас нет доступных заданий... Попробуйте позже")
 
 # ----Прокачать----
 @bot.message_handler(func=lambda message: message.text and  message.text == language_check(message.from_user.id)['register']["main_menu_keyboard"][1])
@@ -132,8 +130,65 @@ def main_menu_info_update(message):
 @bot.callback_query_handler(func=lambda call: isCallBackPrefix(call,"my_cab_up_balanse"))
 def to_balanse_up_update(call):
     language = language_check(call.message.chat.id)
-    
 
+
+
+#####################--Активные заказы--################################################
+
+# ----Вернуться к меню заказов ----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call, "back_to_orders_menu"))
+def back_to_orders_menu_update(call):
+    language = language_check(call.message.chat.id)
+    markup = menu.get_adv_menu_markup(language,call.from_user.id)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=language["adv_menu"]["text"],reply_markup=markup)
+
+
+# ----Перейти к активным заказам----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call, "adv_menu_to_active"))
+def to_ative_order_update(call):
+    language = language_check(call.message.chat.id)
+    subscribe_active_order = models.SubscribeOrderType.query.filter_by(user_id=call.from_user.id,active=True).all()
+    view_one_post_active_order = models.ViewOnePostOrderType.query.filter_by(user_id=call.from_user.id,active=True).all()
+    view_multi_post_active_order = models.ViewMultiPostOrderType.query.filter_by(user_id=call.from_user.id,active=True).all()
+    all_orders = []
+
+    # Подписка на канал\группу
+    for order in subscribe_active_order:
+        all_orders.append(order)
+
+    # Просмотр поста
+    for order in view_one_post_active_order:
+        all_orders.append(order)
+
+    # Просмотр кол-ва постов
+    for order in view_multi_post_active_order:
+        all_orders.append(order)
+
+    markup = menu.get_active_order_menu(language,all_orders)
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=language["active_order"]["select_text"],reply_markup=markup)
+
+
+# ----Выбрать активный заказ ----
+@bot.callback_query_handler(func=lambda call: isCallBackPrefix(call, "select_active_order"))
+def select_active_order_update(call):
+    language = language_check(call.message.chat.id)
+    order_type = str(call.data.split(" ")[1])
+    order_id = int(call.data.split(" ")[2])
+    format_text = None
+    markup = {}
+    if order_type == "subscribe": # Заказ на подписки
+        order_data = models.SubscribeOrderType.query.filter_by(user_id=call.from_user.id,id=order_id,active=True).first()
+        format_text = language["active_order"]["subscribe_order_format"].format(order_data.id,order_data.count,order_data.chat_id)
+    elif order_type == "view_one_post":# Заказ на просмотр поста
+        order_data = models.ViewOnePostOrderType.query.filter_by(user_id=call.from_user.id,id=order_id,active=True).first()
+        format_text = language["active_order"]["view_one_post_order_format"].format(order_data.id,order_data.count,order_data.chat_id,order_data.msg_id)
+    elif order_type == "view_multi_post": # заказ на просмотр кол-ва постов
+        order_data = models.ViewMultiPostOrderType.query.filter_by(user_id=call.from_user.id,id=order_id,active=True).first()
+        format_text = language["active_order"]["view_multi_post_order_format"].format(order_data.id,order_data.post_count,order_data.count,order_data.chat_id,order_data.last_msg_id)
+    if not format_text:
+        return
+    markup[language["back"]] = "adv_menu_to_active"
+    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=format_text,reply_markup=menu.create_inline_markup(markup))
 
 
 #####################--Создание заказа--################################################
@@ -211,12 +266,13 @@ def pay_subscribe_order_update(call):
     if (user.balanse - price) < 0:
         bot.answer_callback_query(call.id,show_alert=True,text=language["create_order"]["no_money_error"])
         return
-    bot.delete_message(call.message.chat.id,call.message.message_id)
     user.balanse = (user.balanse - price)
     new_order = models.SubscribeOrderType(user_id=call.from_user.id,count=count,chat_id=c_id)
     db.session.add(new_order)
     db.session.commit()
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,text=language["create_order"]["created"])
+
+
 
 
 
